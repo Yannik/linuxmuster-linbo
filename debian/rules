@@ -42,9 +42,9 @@ CHNTPW_DIR=src/$(shell echo $(CHNTPW_ARCHIVE) | sed -e 's/-source//' | sed -e 's
 CHNTPW_URL=http://home.eunet.no/pnordahl/ntpasswd
 
 # kexec-tools
-#KEXEC_ARCHIVE=$(shell grep kexec-tools- debian/md5sums.src | awk '{ print $$2 }')
-#KEXEC_DIR=src/$(shell echo $(KEXEC_ARCHIVE) | sed -e 's/.tar.bz2//')
-#KEXEC_URL=http://ftp.kernel.org/pub/linux/kernel/people/horms/kexec-tools
+KEXEC_ARCHIVE=$(shell grep kexec-tools- debian/md5sums.src | awk '{ print $$2 }')
+KEXEC_DIR=src/$(shell echo $(KEXEC_ARCHIVE) | sed -e 's/.tar.bz2//')
+KEXEC_URL=http://ftp.kernel.org/pub/linux/kernel/people/horms/kexec-tools
 
 # grub4dos
 GRUB4DOS_ARCHIVE=$(shell grep grub4dos- debian/md5sums.src | awk '{ print $$2 }')
@@ -125,15 +125,15 @@ configure-stamp:
 	fi
 
 	# kexec-tools
-#	-@if [ ! -d $(KEXEC_DIR) ]; then \
-#		( [ -e cache/$(KEXEC_ARCHIVE) ] || ( cd cache && wget $(KEXEC_URL)/$(KEXEC_ARCHIVE) ) ); \
-#		( cd cache && grep $(KEXEC_ARCHIVE) ../debian/md5sums.src | md5sum -c ); \
-#		echo "[1mUnpacking $(KEXEC_ARCHIVE)...[0m" ; \
-#		tar xf cache/$(KEXEC_ARCHIVE) -C src; \
-#		echo "[1mPatching kexec-tools sources...[0m" ; \
-#		( cd $(KEXEC_DIR) && for i in ../../patches/kexec-tools/*; do patch -p1 <$$i; done ); \
-#		ln -sf ../$(KEXEC_DIR) src/kexec-tools; \
-#	fi
+	-@if [ ! -d $(KEXEC_DIR) ]; then \
+		( [ -e cache/$(KEXEC_ARCHIVE) ] || ( cd cache && wget $(KEXEC_URL)/$(KEXEC_ARCHIVE) ) ); \
+		( cd cache && grep $(KEXEC_ARCHIVE) ../debian/md5sums.src | md5sum -c ); \
+		echo "[1mUnpacking $(KEXEC_ARCHIVE)...[0m" ; \
+		tar xf cache/$(KEXEC_ARCHIVE) -C src; \
+		echo "[1mPatching kexec-tools sources...[0m" ; \
+		( cd $(KEXEC_DIR) && for i in ../../patches/kexec-tools/*; do patch -p1 <$$i; done ); \
+		ln -sf ../$(KEXEC_DIR) src/kexec-tools; \
+	fi
 
 	# ms-sys
 	-@if [ ! -d $(MSSYS_DIR) ]; then \
@@ -245,10 +245,10 @@ build-stamp: configure-stamp
 	fi
 
 	# kexec-tools
-#	-@if [ ! -e $(KEXEC_DIR)/build/sbin/kexec ]; then \
-#		echo "[1mBuilding kexec...[0m" ; \
-#		( cd $(KEXEC_DIR) && LDFLAGS=-static ./configure && make && strip build/sbin/kexec ); \
-#	fi
+	-@if [ ! -e $(KEXEC_DIR)/build/sbin/kexec ]; then \
+		echo "[1mBuilding kexec...[0m" ; \
+		( cd $(KEXEC_DIR) && LDFLAGS=-static ./configure && make && strip build/sbin/kexec ); \
+	fi
 
 	# ms-sys
 	-@if [ ! -e $(MSSYS_DIR)/bin/ms-sys ]; then \

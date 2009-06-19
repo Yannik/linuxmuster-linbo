@@ -1,3 +1,11 @@
+linuxmuster-linbo (1.1.20-1) unstable; urgency=low
+
+  * linbofs:
+    - compiling kexec again from source, jaunty version does not boot linux kernels
+    - adding "-w" to hostname only if client is really offline, means owns no ip
+
+ -- Thomas Schmitt <schmitt@lmz-bw.de>  Fri, 19 Jun 2009 13:25:47 +0200
+
 linuxmuster-linbo (1.1.19-1) unstable; urgency=low
 
   * various modifications due to new build system Ubuntu 09.4
