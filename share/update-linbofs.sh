@@ -7,7 +7,7 @@
 # $Id: update-linbofs.sh 1083 2011-06-07 10:13:34Z tschmitt $
 
 # read linuxmuster environment
-. /usr/share/linuxmuster/config/dist.conf || exit 1
+. /usr/share/linuxmursyncster/config/dist.conf || exit 1
 . $HELPERFUNCTIONS || exit 1
 
 groups="$@"
@@ -85,7 +85,7 @@ bailout() {
 
 # grep linbo rsync password to sync it with linbo account
 [ ! -s /etc/rsyncd.secrets ] && bailout "/etc/rsyncd.secrets not found!"
-linbo_passwd=`grep ^linbo /etc/rsyncd.secrets | awk -F\: '{ print $2 }'`
+linbo_passwd=`grep ^linbo /etc/rsyncd.secrets | cut -d ":" -f2 | tr -d '\n' | md5sum`
 if [ -z "$linbo_passwd" ]; then
  bailout "Cannot read linbo password from /etc/rsyncd.secrets!"
 else
