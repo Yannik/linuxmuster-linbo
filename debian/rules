@@ -104,6 +104,16 @@ CTORRENT_ARCHIVE=$(shell grep ctorrent- debian/md5sums.src | awk '{ print $$2 }'
 CTORRENT_DIR=src/$(shell echo $(CTORRENT_ARCHIVE) | sed -e 's/.tar.gz//')
 CTORRENT_URL=http://www.rahul.net/dholmes/ctorrent
 
+# ntp
+NTP_ARCHIVE=$(shell grep ntp- debian/md5sums.src | awk '{ print $$2 }')
+NTP_DIR=src/$(shell echo $(NTP_ARCHIVE) | sed -e 's/.tar.gz//')
+NTP_URL=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
+
+#openssl
+OPENSSL_ARCHIVE=$(shell grep openssl debian/md5sums.src | awk '{ print $$2 }')
+OPENSSL_DIR=src/$(shell echo $(OPENSSL_ARCHIVE) | sed -e 's/.tar.gz//')
+OPENSSL_URL=http://www.openssl.org/source
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -219,6 +229,25 @@ configure-stamp:
 		echo "[1mUnpacking $(CTORRENT_ARCHIVE)...[0m" ; \
 		tar xf cache/$(CTORRENT_ARCHIVE) -C src; \
 		ln -sf ../$(CTORRENT_DIR) src/ctorrent; \
+	fi
+
+        # ntp
+	-@if [ ! -d $(NTP_DIR) ]; then \
+		( [ -e cache/$(NTP_ARCHIVE) ] || ( cd cache && wget $(NTP_URL)/$(NTP_ARCHIVE) ) ); \
+		( cd cache && grep $(NTP_ARCHIVE) ../debian/md5sums.src | md5sum -c ); \
+		echo "^[[1mUnpacking $(NTP_ARCHIVE)...^[[0m" ; \
+		tar xf cache/$(NTP_ARCHIVE) -C src; \
+		ln -sf ../$(NTP_DIR) src/ntp; \
+	fi
+
+
+        # openssl
+	-@if [ ! -d $(OPENSSL_DIR) ]; then \
+		( [ -e cache/$(OPENSSL_ARCHIVE) ] || ( cd cache && wget $(OPENSSL_URL)/$(OPENSSL_ARCHIVE) ) ); \
+		( cd cache && grep $(OPENSSL_ARCHIVE) ../debian/md5sums.src | md5sum -c ); \
+		echo "^[[1mUnpacking $(OPENSSL_ARCHIVE)...^[[0m" ; \
+		tar xf cache/$(OPENSSL_ARCHIVE) -C src; \
+		ln -sf ../$(OPENSSL_DIR) src/openssl; \
 	fi
 
 	# qt
@@ -353,6 +382,18 @@ build-stamp: configure-stamp
 	-@if [ ! -e $(CTORRENT_DIR)/ctorrent ]; then \
 		echo "[1mBuilding ctorrent...[0m" ; \
 		( cd $(CTORRENT_DIR) && ./configure --with-ssl=no && make && strip ctorrent ); \
+	fi
+
+        # ntp
+	-@if [ ! -e $(NTP_DIR)/ntpdate/ntpdate ]; then \
+		echo "^[[1mBuilding ntp...^[[0m" ; \
+		( cd $(NTP_DIR) && ./configure && make && strip ntpdate/ntpdate ); \
+	fi
+
+	# openssl
+	-@if [ ! -e $(OPENSSL_DIR)/out/lib/libcrypto.so ]; then \
+		echo "^[[1mBuilding openssl...^[[0m" ; \
+		( cd $(OPENSSL_DIR) && mkdir -p out openssldir && ./config shared --prefix=`pwd`/out --openssldir=`pwd`/openssldir && make && make install && strip --strip-unneeded out/lib/libcrypto.so out/lib/libssl.so); \
 	fi
 
 	# qt
