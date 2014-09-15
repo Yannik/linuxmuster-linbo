@@ -141,6 +141,7 @@ get_partitions() {
  local line=""
  local param=""
  local value=""
+ local lable""
  local c=0
  # parse start.conf
  while read line; do
@@ -155,7 +156,7 @@ get_partitions() {
      [ -z "$size" ] && size=0
      [ "$bootable" != "[Yy][Ee][Ss]" ] && bootable="-"
      [ -z "$fstype" ] && fstype="-"
-     partitions="$partitions $dev $size $pid $bootable $fstype"
+     partitions="$partitions $dev $size $pid $bootable $fstype $label"
      dev="" ; size="" ; pid="" ; fstype="" ; bootable=""
     fi
     case "$line" in \[[Oo][Ss]\]) return 0 ;; esac
@@ -171,6 +172,7 @@ get_partitions() {
    [Ii][Dd]) pid="$value" ;;
    [Bb][Oo][Oo][Tt][Aa][Bb][Ll][Ee]) bootable="$value" ;;
    [Ff][Ss][Tt][Yy][Pp][Ee]) fstype="$value" ;;
+   [Ll][Aa][Bb][Ee][Ll] label="$value" ;;
   esac
  done < /start.conf
 } # get_partitions
