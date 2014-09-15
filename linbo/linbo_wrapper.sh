@@ -141,7 +141,7 @@ get_partitions() {
  local line=""
  local param=""
  local value=""
- local lable""
+ local label""
  local c=0
  # parse start.conf
  while read line; do
