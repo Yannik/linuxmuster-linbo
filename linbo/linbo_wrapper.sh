@@ -157,7 +157,7 @@ get_partitions() {
      [ "$bootable" != "[Yy][Ee][Ss]" ] && bootable="-"
      [ -z "$fstype" ] && fstype="-"
      partitions="$partitions $dev $size $pid $bootable $fstype $label"
-     dev="" ; size="" ; pid="" ; fstype="" ; bootable=""
+     dev="" ; size="" ; pid="" ; fstype="" ; bootable="" ; label=""
     fi
     case "$line" in \[[Oo][Ss]\]) return 0 ;; esac
     continue
